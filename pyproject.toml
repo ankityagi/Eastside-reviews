@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "recs"
+version = "0.2.0"
+description = "Private index of service-pro recommendations from neighborhood group chats, with a login-protected web page"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+server = ["gunicorn==23.0.0"]
+
+[project.scripts]
+recs = "recs.cli:main"
+
+[tool.setuptools]
+packages = ["recs"]

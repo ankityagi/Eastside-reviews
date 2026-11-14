@@ -1,0 +1,18 @@
+# Private data: never commit. This repository is public.
+data/
+*.db
+*.db-journal
+*.db-wal
+secret.key
+session.key
+local_words.json
+referrals.html
+*.zip
+*.txt
+!requirements*.txt
+*.jsonl
+exports/
+
+__pycache__/
+*.egg-info/
+.venv/

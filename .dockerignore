@@ -1,0 +1,13 @@
+.git
+data
+exports
+*.db
+*.key
+*.zip
+*.txt
+*.jsonl
+referrals.html
+local_words.json
+__pycache__
+*.egg-info
+tests
