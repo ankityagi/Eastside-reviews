@@ -1,0 +1,11 @@
+name = "eastside-reviews"
+main = "src/index.js"
+compatibility_date = "2026-10-01"
+workers_dev = true
+
+# Private data store (page, accounts, sign-in counters). Fill with: recs cf publish / recs cf user add
+[[kv_namespaces]]
+binding = "DATA"
+id = "04984e54c1554ca7a1e363f998abaf83"
+
+# Also needs a secret, set once: npx wrangler secret put SESSION_SECRET

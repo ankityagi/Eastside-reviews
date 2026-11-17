@@ -10,6 +10,7 @@
   recs site [-o referrals.html]    browsable page with every quote behind each pro
   recs serve [--port 8000]         the page behind a login (see DEPLOY.md for production)
   recs user add|list|remove|passwd|signout NAME   manage who can sign in
+  recs cf publish | recs cf user add|list|remove|passwd|signout NAME   Cloudflare Worker (DEPLOY.md)
 """
 from __future__ import annotations
 
@@ -25,7 +26,7 @@ from .extract import extract, fmt_phone
 from .trades import TRADES, resolve_query
 from .whatsapp import first_name
 
-COMMANDS = {"user", "serve", "site", "import", "trades", "pro", "merge", "rename", "hide", "unhide", "stats", "rebuild", "help"}
+COMMANDS = {"cf", "user", "serve", "site", "import", "trades", "pro", "merge", "rename", "hide", "unhide", "stats", "rebuild", "help"}
 MARK = {"positive": "+", "negative": "-", "neutral": "~"}
 
 
@@ -219,6 +220,12 @@ def main(argv: list[str] | None = None) -> int:
         ap.add_argument("action", choices=["add", "list", "remove", "passwd", "signout"])
         ap.add_argument("name", nargs="?")
         ap.add_argument("--password-stdin", action="store_true", help="read the password from stdin instead of generating one")
+    elif cmd == "cf":
+        ap.add_argument("what", choices=["publish", "user"])
+        ap.add_argument("action", nargs="?", choices=["add", "list", "remove", "passwd", "signout"])
+        ap.add_argument("name", nargs="?")
+        ap.add_argument("--title")
+        ap.add_argument("--password-stdin", action="store_true")
     elif cmd == "serve":
         ap.add_argument("--host", default="127.0.0.1")
         ap.add_argument("--port", type=int, default=8000)
@@ -264,6 +271,15 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     if cmd == "user":
         return cmd_user(db, args)
+    if cmd == "cf":
+        from . import cloudflare
+        if args.what == "publish":
+            cloudflare.publish(db, args.title)
+            return 0
+        if not args.action:
+            print("Usage: recs cf user add|list|remove|passwd|signout NAME", file=sys.stderr)
+            return 2
+        return cloudflare.user(args.action, args.name, args.password_stdin)
     if cmd == "serve":
         from .web import serve
         db.con.close()
